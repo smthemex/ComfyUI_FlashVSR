@@ -32,7 +32,7 @@ from transformers.modeling_utils import PreTrainedModel
 from transformers.utils import logging
 from transformers.generation.logits_process import LogitsProcessor
 from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaList, GenerationConfig, ModelOutput
-from transformers import PretrainedConfig
+from transformers.configuration_utils import PretrainedConfig
 from torch.nn.parameter import Parameter
 import bz2
 import torch
