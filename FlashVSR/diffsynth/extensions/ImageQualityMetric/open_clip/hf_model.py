@@ -11,7 +11,8 @@ from torch import TensorType
 
 try:
     import transformers
-    from transformers import AutoModel, AutoTokenizer, AutoConfig, PretrainedConfig
+    from transformers import AutoModel, AutoTokenizer, AutoConfig
+    from transformers.configuration_utils import PretrainedConfig
     from transformers.modeling_outputs import BaseModelOutput, BaseModelOutputWithPooling, \
         BaseModelOutputWithPoolingAndCrossAttentions
 except ImportError as e:
