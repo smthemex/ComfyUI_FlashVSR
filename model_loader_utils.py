@@ -45,7 +45,16 @@ def load_vae_model(vae,tcd_encoder,lite_vae, device="cuda"):
     elif tcd_encoder_path is not None:
         from .FlashVSR.examples.WanVSR.utils.TCDecoder import build_tcdecoder
         vae = build_tcdecoder(new_channels=[512, 256, 128, 128], new_latent_channels=16+768)
-        vae.load_state_dict(torch.load(tcd_encoder_path,weights_only=False,), strict=False)
+        tcd_state=torch.load(tcd_encoder_path,weights_only=False,)
+        if isinstance(tcd_state,dict) and "decoder" in tcd_state:
+            tcd_state=tcd_state["decoder"]  # 兼容 FlashVSR+ 的 TCDecoder.ckpt 包装结构
+        load_report=vae.load_state_dict(tcd_state, strict=False)
+        total=len(vae.state_dict())
+        miss=len(load_report.missing_keys); unexp=len(load_report.unexpected_keys)
+        print(f"[FlashVSR] TCDecoder load: matched {total-miss}/{total}, missing={miss}, unexpected={unexp}")
+        if miss > total*0.05:
+            print("[FlashVSR][WARN] TCDecoder 权重覆盖率过低，解码质量会严重异常！"
+                  "请确认 tcd_encoder 选择的是 FlashVSR+ 发布的 TCDecoder.ckpt")
         vae.vae_mode="tcd"
     elif  lite_vae_path is not None:
         if "light" in lite_vae_path.lower() or "tae" in lite_vae_path.lower():

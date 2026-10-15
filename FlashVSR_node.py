@@ -8,8 +8,7 @@ from .model_loader_utils import  tensor_upscale,decode_latents,get_video_files,c
 from .FlashVSR.examples.WanVSR.infer_flashvsr_full import init_pipeline,run_inference
 from .FlashVSR.examples.WanVSR.infer_flashvsr_tiny_long_video import init_pipeline_long
 import folder_paths
-from typing_extensions import override
-from comfy_api.latest import ComfyExtension, io
+from comfy_api.latest import  io
 import nodes
 from pathlib import PureWindowsPath
 from comfy_api.input_impl import VideoFromFile
@@ -38,23 +37,32 @@ class FlashVSR_SM_Model(io.ComfyNode):
             display_name="FlashVSR_SM_Model",
             category="FlashVSR",
             inputs=[
-                io.Combo.Input("dit",options= ["none"] + [i for i in folder_paths.get_filename_list("FlashVSR") if "dmd" in i.lower()]),
+                io.Combo.Input("dit",options= ["none"] + [i for i in folder_paths.get_filename_list("FlashVSR") if ("dmd" in i.lower() or "dit" in i.lower())]),
                 io.Combo.Input("proj_pt",options= ["none"] + [i for i in folder_paths.get_filename_list("FlashVSR") if "proj" in i.lower()]),
                 io.Combo.Input("emb_pt",options= ["none"] + [i for i in folder_paths.get_filename_list("FlashVSR") if "prompt" in i.lower()]),
-                io.Combo.Input("version",options= ["1.1","1.0"] ),
+                io.Combo.Input("version",options= ["1.1","1.0","plus_turbo","plus_base"] ),
                 io.Boolean.Input("tiny_long", default=False),
                 io.Boolean.Input("offload", default=False),
+                io.Combo.Input("plus_temporal",options= ["4","2","1"] ),
+                io.Combo.Input("plus_attn",options= ["sdpa","auto","block_sparse","triton_block_sparse"] ),
             ],
             outputs=[
                 io.Custom("FlashVSR_SM_Model").Output(),
                 ],
             )
     @classmethod
-    def execute(cls, dit,proj_pt,emb_pt,version,tiny_long,offload) -> io.NodeOutput:
+    def execute(cls, dit,proj_pt,emb_pt,version,tiny_long,offload,plus_mode="turbo",plus_temporal="4",plus_attn="sdpa") -> io.NodeOutput:
         dit_path=folder_paths.get_full_path("FlashVSR", dit) if dit != "none" else None
         proj_pt_path=folder_paths.get_full_path("FlashVSR", proj_pt) if proj_pt != "none" else None
         prompt_path=folder_paths.get_full_path("FlashVSR", emb_pt) if emb_pt != "none" else None
         assert prompt_path is not None and dit_path is not None and proj_pt is not None  , "Please select the emb pt,dit,proj_pt file"
+        if version == "plus_turbo" or version == "plus_base":
+            # ---- FlashVSR+ (plus)：只加载 denoiser（TinyDecoder 由 Vae 节点 tcd_encoder 加载，
+            # 与 1.0/1.1 的 tcd 模式一致），解码在 Decoder 节点完成 ----
+            from .flashvsr_plus_node import build_plus_pipeline
+            plus_mode="turbo" if version == "plus_turbo" else "base"
+            model = build_plus_pipeline(dit_path, proj_pt_path, plus_mode, plus_temporal, offload, plus_attn, prompt_path)
+            return io.NodeOutput(model)
         if tiny_long:
             model=init_pipeline_long(prompt_path,proj_pt_path,dit_path, device="cuda",offload=offload,version=version)
         else:
@@ -89,6 +97,15 @@ class FlashVSR_SM_KSampler(io.ComfyNode):
     @classmethod
     def execute(cls, model,image,width,height,seed,scale,kv_ratio,local_range, steps, cfg,sparse_ratio,) -> io.NodeOutput:
         image=tensor_upscale(image,width, height)
+        from .flashvsr_plus_node import is_plus_pipeline
+        if is_plus_pipeline(model):
+            # ---- FlashVSR+ (plus)：流式去噪 -> 延迟解码 latent，TinyDecoder 在 Decoder 节点执行 ----
+            from .flashvsr_plus_node import run_plus_denoise
+            print("[FlashVSR+] plus 模式: steps/cfg/sparse_ratio/kv_ratio/local_range/scale 参数不生效"
+                  "(plus 为固定 1-step、固定 4x 超分)")
+            latent_out=run_plus_denoise(model,image,width,height,seed,scale)
+            return io.NodeOutput(latent_out)
+        
         offload=getattr(model,"offload",False)
         clear_comfyui_cache()
         print(f"start inference with seed:{seed}")
@@ -138,6 +155,11 @@ class FlashVSR_SM_Decoder(io.ComfyNode):
         )
     @classmethod
     def execute(cls, vae,latent,full_tiled,color_fix,fix_method) -> io.NodeOutput:
+        # ---- FlashVSR+ (plus) 分支：用 Vae 节点加载的 TCDecoder(tcd_encoder) 解码延迟 latent ----
+        if isinstance(latent,dict) and latent.get("flashvsr_plus_deferred"):
+            from .flashvsr_plus_node import decode_plus_latents
+            images=decode_plus_latents(latent,vae,bool(color_fix),fix_method)
+            return io.NodeOutput(images)
         images=decode_latents( vae,latent,color_fix,fix_method,full_tiled, device)
         return io.NodeOutput(images)
 
@@ -204,18 +226,6 @@ class FlashVSR_SM_VideoPathLoop(io.ComfyNode):
        return ""
 
 
-class FlashVSR_SM_Extension(ComfyExtension):
-    @override
-    async def get_node_list(self) -> list[type[io.ComfyNode]]:
-        return [
-            FlashVSR_SM_Model,
-            FlashVSR_SM_KSampler,
-            FlashVSR_SM_Vae,
-            FlashVSR_SM_Decoder,
-            FlashVSR_SM_VideoPathLoop,
-        ]
-async def comfy_entrypoint() -> FlashVSR_SM_Extension:  # ComfyUI calls this to load your extension and its nodes.
-    return FlashVSR_SM_Extension()
 
 
 
