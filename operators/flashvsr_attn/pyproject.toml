@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flashvsr-attn"
+version = "0.1.0"
+description = "A small inference-only Triton block-sparse attention kernel for FlashVSR stream inference"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "torch>=2.2",
+  "triton>=3.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+include = ["flashvsr_attn*"]
