@@ -1,0 +1,669 @@
+{
+  "id": "6cf87ced-2132-43ab-9999-387ffb65143a",
+  "revision": 0,
+  "last_node_id": 32,
+  "last_link_id": 39,
+  "nodes": [
+    {
+      "id": 8,
+      "type": "LoadVideo",
+      "pos": [
+        395.3860567887524,
+        -37.5429837270471
+      ],
+      "size": [
+        375.778896850586,
+        496.23758535766603
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            17
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadVideo"
+      },
+      "widgets_values": [
+        "test1018.mp4",
+        "image"
+      ],
+      "widgets_values_named": {
+        "file": "test1018.mp4",
+        "upload": "image"
+      }
+    },
+    {
+      "id": 9,
+      "type": "GetVideoComponents",
+      "pos": [
+        867.9298127915598,
+        175.0080313852573
+      ],
+      "size": [
+        140,
+        106
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 18
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            35
+          ]
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            14
+          ]
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "links": [
+            15
+          ]
+        },
+        {
+          "name": "bit_depth",
+          "type": "COMBO",
+          "links": null
+        },
+        {
+          "name": "color_space",
+          "type": "COMBO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GetVideoComponents"
+      }
+    },
+    {
+      "id": 10,
+      "type": "CreateVideo",
+      "pos": [
+        1234.430602769588,
+        151.36050467322133
+      ],
+      "size": [
+        270,
+        150
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 39
+        },
+        {
+          "name": "audio",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": 14
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "widget": {
+            "name": "fps"
+          },
+          "link": 15
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo"
+      },
+      "widgets_values": [
+        30,
+        "auto",
+        "sRGB",
+        "none"
+      ],
+      "widgets_values_named": {
+        "fps": 30,
+        "bit_depth": "auto",
+        "color_space": "sRGB",
+        "codec": "none"
+      }
+    },
+    {
+      "id": 11,
+      "type": "SaveVideo",
+      "pos": [
+        1548.765726878474,
+        -225.09723313500652
+      ],
+      "size": [
+        433.47068728637703,
+        693.7195923767091
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 16
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "video/ComfyUI",
+        "auto",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "video/ComfyUI",
+        "format": "auto",
+        "format.codec": "auto",
+        "codec": "auto"
+      }
+    },
+    {
+      "id": 12,
+      "type": "Video Slice",
+      "pos": [
+        830.1738547959544,
+        341.9495688486364
+      ],
+      "size": [
+        270,
+        106
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            18
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Video Slice"
+      },
+      "widgets_values": [
+        0,
+        4,
+        false
+      ],
+      "widgets_values_named": {
+        "start_time": 0,
+        "duration": 4,
+        "strict_duration": false
+      }
+    },
+    {
+      "id": 25,
+      "type": "MarkdownNote",
+      "pos": [
+        829.1700337998602,
+        -479.5764642446256
+      ],
+      "size": [
+        535.5183126831055,
+        142.95279363250734
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "# 1.width and heigh  use for  control input video' params\n# 高/宽参数用于控制输入视频的尺寸，实际超分要乘以scale 倍数\n\n-------\n\n\n# 2.plus and long_mode must use tcd decode\n# plus 和long 模式必须使用tcd解码"
+      ],
+      "widgets_values_named": {
+        "text": "# 1.width and heigh  use for  control input video' params\n# 高/宽参数用于控制输入视频的尺寸，实际超分要乘以scale 倍数\n\n-------\n\n\n# 2.plus and long_mode must use tcd decode\n# plus 和long 模式必须使用tcd解码"
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 26,
+      "type": "FlashVSR_SM_Model",
+      "pos": [
+        397.5392132858506,
+        -251.3850503299019
+      ],
+      "size": [
+        366.5832254943848,
+        170.0000130310059
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "FVSRN_MODEL",
+          "links": [
+            34
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlashVSR_SM_Model"
+      },
+      "widgets_values": [
+        "turbo_dit_plus.safetensors",
+        "lq_proj_in_plus_turbo.safetensors",
+        "posi_prompt_plus.pth",
+        "plus_turbo"
+      ],
+      "widgets_values_named": {
+        "dit": "turbo_dit_plus.safetensors",
+        "lq_proj": "lq_proj_in_plus_turbo.safetensors",
+        "prompt_embed": "posi_prompt_plus.pth",
+        "version": "plus_turbo"
+      }
+    },
+    {
+      "id": 27,
+      "type": "FlashVSR_SM_Sampler",
+      "pos": [
+        800.2272169784774,
+        -238.8010946414255
+      ],
+      "size": [
+        348.8580078125,
+        318
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "FVSRN_MODEL",
+          "link": 34
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 35
+        }
+      ],
+      "outputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            37
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlashVSR_SM_Sampler"
+      },
+      "widgets_values": [
+        768,
+        1024,
+        0,
+        "fixed",
+        2,
+        3.5,
+        11,
+        2,
+        false,
+        0,
+        false
+      ],
+      "widgets_values_named": {
+        "width": 768,
+        "height": 1024,
+        "seed": 0,
+        "control_after_generate": "fixed",
+        "scale": 2,
+        "kv_ratio": 3.5,
+        "local_range": 11,
+        "sparse_ratio": 2,
+        "offload": false,
+        "chunk_q": 0,
+        "long_mode": false
+      }
+    },
+    {
+      "id": 29,
+      "type": "FlashVSR_SM_Vae",
+      "pos": [
+        1160.3231874374617,
+        364.26291643645544
+      ],
+      "size": [
+        270,
+        82
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "vae",
+          "type": "FVSRN_VAE",
+          "links": [
+            38
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlashVSR_SM_Vae"
+      },
+      "widgets_values": [
+        "none",
+        "TCDecoder_plus.ckpt"
+      ],
+      "widgets_values_named": {
+        "vae": "none",
+        "tcd_encoder": "TCDecoder_plus.ckpt"
+      }
+    },
+    {
+      "id": 30,
+      "type": "FlashVSR_SM_Decoder",
+      "pos": [
+        1223.243187437462,
+        -220.40908910248498
+      ],
+      "size": [
+        270,
+        222
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 37
+        },
+        {
+          "name": "vae",
+          "type": "FVSRN_VAE",
+          "link": 38
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            39
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlashVSR_SM_Decoder"
+      },
+      "widgets_values": [
+        true,
+        64,
+        16,
+        64,
+        8,
+        true,
+        "wavelet"
+      ],
+      "widgets_values_named": {
+        "tiled": true,
+        "tile_size": 64,
+        "overlap": 16,
+        "temporal_size": 64,
+        "temporal_overlap": 8,
+        "color_fix": true,
+        "fix_method": "wavelet"
+      }
+    },
+    {
+      "id": 31,
+      "type": "FlashVSR_SM_VideoTrimLoop",
+      "pos": [
+        -1.4703892989884366,
+        4.74767434050807
+      ],
+      "size": [
+        294.983984375,
+        258
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": null
+        },
+        {
+          "name": "number",
+          "type": "NUMBER",
+          "links": null
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "filename",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "start_time",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlashVSR_SM_VideoTrimLoop"
+      },
+      "widgets_values": [
+        "1-一名俄罗斯防空兵失去了对一挺YakB-12.7重机枪的控制，巨大的后坐力将他甩飞了出去。这挺机枪通常安装在Mi-24武装直升机上，但被改装用于击落无人机-480P 标清-AVC.mp4",
+        5,
+        1477042997,
+        "randomize",
+        0,
+        "image"
+      ],
+      "widgets_values_named": {
+        "video_file": "1-一名俄罗斯防空兵失去了对一挺YakB-12.7重机枪的控制，巨大的后坐力将他甩飞了出去。这挺机枪通常安装在Mi-24武装直升机上，但被改装用于击落无人机-480P 标清-AVC.mp4",
+        "split_length": 5,
+        "seed": 1477042997,
+        "control_after_generate": "randomize",
+        "reset_bool": 0,
+        "upload": "image"
+      }
+    },
+    {
+      "id": 32,
+      "type": "MarkdownNote",
+      "pos": [
+        -0.6332636854913858,
+        -239.3712615621304
+      ],
+      "size": [
+        307.6388092193604,
+        138.42221269226076
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "# Use for long video split \n# 此加载节点适用于超长视频超分，设置切分长度，然后把“运行”按钮左侧的推理批次数值改成 \"加载视频总时长/切分长度的数值\"，点击“运行”即可"
+      ],
+      "widgets_values_named": {
+        "text": "# Use for long video split \n# 此加载节点适用于超长视频超分，设置切分长度，然后把“运行”按钮左侧的推理批次数值改成 \"加载视频总时长/切分长度的数值\"，点击“运行”即可"
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      14,
+      9,
+      1,
+      10,
+      1,
+      "AUDIO"
+    ],
+    [
+      15,
+      9,
+      2,
+      10,
+      2,
+      "FLOAT"
+    ],
+    [
+      17,
+      8,
+      0,
+      12,
+      0,
+      "VIDEO"
+    ],
+    [
+      18,
+      12,
+      0,
+      9,
+      0,
+      "VIDEO"
+    ],
+    [
+      16,
+      10,
+      0,
+      11,
+      0,
+      "VIDEO"
+    ],
+    [
+      34,
+      26,
+      0,
+      27,
+      0,
+      "FVSRN_MODEL"
+    ],
+    [
+      35,
+      9,
+      0,
+      27,
+      1,
+      "IMAGE"
+    ],
+    [
+      37,
+      27,
+      0,
+      30,
+      0,
+      "LATENT"
+    ],
+    [
+      38,
+      29,
+      0,
+      30,
+      1,
+      "FVSRN_VAE"
+    ],
+    [
+      39,
+      30,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "new wrapper",
+      "bounding": [
+        337.97713027954103,
+        -315.27564131081317,
+        1696.3337614793045,
+        809.8634241120858
+      ],
+      "color": "#3f789e",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "note": "FlashVSR native (comfy wan patches). Model: dit=LQ_proj/posi_prompt from models/FlashVSR; version 1.0=Buffer proj / 1.1=Causal proj (must match lq_proj ckpt). Decoder: pick VAELoader(Wan2.1 VAE) OR tcd_encoder=TCDecoder.ckpt. long_mode=true requires tcd_encoder. FlashVSR+ uses FlashVSR_Native_PlusModel + PlusSampler (mode must match weights) decoded via tcd_encoder.",
+    "ds": {
+      "scale": 0.7513148009015777,
+      "offset": [
+        218.68952430875387,
+        658.6227581546091
+      ]
+    },
+    "frontendVersion": "1.57.1"
+  },
+  "version": 0.4
+}
