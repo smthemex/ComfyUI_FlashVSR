@@ -1,9 +1,9 @@
 [project]
 name = "flashvsr"
 description = "FlashVSR：Towards Real-Time Diffusion-Based Streaming Video Super-Resolution，you can use it in comfyUI"
-version = "1.0.1"
+version = "1.1.1"
 license = {file = "LICENSE"}
-dependencies = ["torch", "torchaudio", "torchmetrics", "torchsde", "torchvision", "accelerate", "einops", "huggingface-hub", "matplotlib", "numpy", "opencv-python", "opencv-python-headless", "peft", "pillow", "safetensors", "sentencepiece", "transformers", "pytorch-lightning", "imageio", "imageio-ffmpeg", "protobuf", "ftfy", "pandas", "tqdm", "datasets"]
+dependencies = ["torch"]
 
 [project.urls]
 Repository = "https://github.com/smthemex/ComfyUI_FlashVSR"
